@@ -1,0 +1,255 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — deep indigo base, electric cyan primary.
+
+   Depth comes from material, not light: four elevation levels, each with a
+   slightly brighter hairline border. Shadows are tight and neutral (2-8px,
+   high opacity, never coloured). Exactly one soft glow exists on the site —
+   on the pipeline diagram's active node — and it is defined at the bottom
+   of this file so it stays easy to audit.
+
+   Every text token clears 4.5:1 against every elevation. Verified:
+     ink   16.60 / 15.54 / 14.20 / 12.63
+     dim    7.57 /  7.09 /  6.47 /  5.76
+     muted  6.25 /  5.85 /  5.34 /  4.75
+     cyan  10.88 / 10.18 /  9.30 /  8.27
+     violet 6.59 /  6.17 /  5.64 /  5.01
+--------------------------------------------------------------------------- */
+@theme {
+  /* Elevation ladder: 0 (page) through 3 (highest panel). */
+  --color-bg: #080b14;
+  --color-e1: #0f1420;
+  --color-e2: #161d2e;
+  --color-e3: #1e2739;
+
+  /* Hairlines brighten as elevation increases. */
+  --color-line-1: #1a2233;
+  --color-line-2: #232d42;
+  --color-line-3: #2e3a52;
+  --color-line-4: #3a4864;
+
+  --color-ink: #e8ecf4;
+  --color-dim: #96a1b8;
+  --color-muted: #8492aa;
+
+  --color-primary: #22d3ee;
+  --color-accent: #818cf8;
+  --color-danger: #fb7185;
+
+  --font-display: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  --text-2xs: 0.75rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.9375rem;
+  --text-base: 1rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.75rem;
+  --text-xl: 2.5rem;
+  --text-2xl: 3.5rem;
+  --text-3xl: 4.5rem;
+
+  /* Tight, neutral, high-opacity. No colour, no wide blur. */
+  --shadow-e1: 0 1px 2px rgb(0 0 0 / 0.55);
+  --shadow-e2: 0 2px 5px rgb(0 0 0 / 0.6);
+  --shadow-e3: 0 4px 8px rgb(0 0 0 / 0.65);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-bg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    line-height: 1.4;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .container-edge {
+    width: 100%;
+    max-width: 80rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .container-edge {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container-edge {
+      padding-inline: 4rem;
+    }
+  }
+
+  /* Faint grid, background layer only — never sits behind text. Applied to
+     decorative wrappers, masked so it fades out before reaching content. */
+  .grid-texture {
+    background-image:
+      linear-gradient(to right, var(--color-line-1) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line-1) 1px, transparent 1px);
+    background-size: 64px 64px;
+    opacity: 0.5;
+  }
+
+  /* Load sequence. CSS, not JS: the hero holds the LCP element, so it must
+     not wait on hydration. Starts at 0.01 rather than 0 because Chrome
+     disqualifies fully transparent elements as LCP candidates. */
+  @keyframes rise-in {
+    from {
+      opacity: 0.01;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .rise-in {
+    animation: rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise-in {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Pipeline diagram entrance: stages left to right, contract labels a beat
+     after. `both` fill means the element is visible when the animation ends
+     and the diagram needs no JS at all. */
+  @keyframes pipe-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .pipe-in {
+    animation: pipe-in 0.32s ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pipe-in {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  /* Scroll reveals. Driven by a data attribute the observer sets, so the
+     default (no JS, pre-hydration, reduced motion) is fully visible. */
+  [data-reveal="hidden"] {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  [data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
+  .skip-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 80;
+    padding: 0.625rem 1rem;
+    color: var(--color-bg);
+    background-color: var(--color-primary);
+    font-weight: 500;
+    transform: translateY(-120%);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+}
+
+/* Cyan focus ring. Outside @layer so it beats Tailwind's preflight
+   `outline-color: currentColor`, which would otherwise inherit link colour. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* THE one glow on the site. Spent on the pipeline diagram's active node —
+   the signature element. Do not add a second. */
+.signature-glow {
+  filter: drop-shadow(0 0 6px rgb(34 211 238 / 0.45));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signature-glow {
+    filter: none;
+  }
+}
+
+.sr-only-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
