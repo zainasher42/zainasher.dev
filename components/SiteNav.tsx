@@ -53,7 +53,7 @@ export function SiteNav() {
               aria-hidden="true"
               className="block size-2 shrink-0 bg-primary"
             />
-            zainasher.dev
+            {profile.wordmark}
           </Link>
 
           {/* Desktop nav */}

@@ -26,6 +26,9 @@ const MUTED = "#8492AA";
 const PRIMARY = "#22D3EE";
 const ACCENT = "#818CF8";
 
+// Keep in sync with content/profile.ts domain.
+const SITE = "zainasher-dev.vercel.app";
+
 const MONO = "JetBrains Mono, DejaVu Sans Mono, monospace";
 const SANS = "Instrument Sans, DejaVu Sans, sans-serif";
 
@@ -112,7 +115,7 @@ function card({ eyebrow, title, chip, chipTone = "primary", showStrip = true }) 
 
   <line x1="80" y1="428" x2="1120" y2="428" stroke="${LINE}" stroke-width="1"/>
   <text x="80" y="470" fill="${INK}" font-family="${MONO}" font-size="19" letter-spacing="1.4">ZAIN ASHER</text>
-  <text x="1120" y="470" text-anchor="end" fill="${MUTED}" font-family="${MONO}" font-size="19" letter-spacing="1.4">zainasher.dev</text>
+  <text x="1120" y="470" text-anchor="end" fill="${MUTED}" font-family="${MONO}" font-size="19" letter-spacing="1.4">${SITE}</text>
 
   ${showStrip ? stageStrip(508) : ""}
 </svg>`;

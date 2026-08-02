@@ -60,6 +60,11 @@ counts for that reason.
 
 ## Deploy
 
-Vercel, static export from `out/`. Production domain `zainasher.dev`.
+Vercel, static export from `out/`. Live at **zainasher-dev.vercel.app**.
+
+`content/profile.ts` holds `siteUrl`/`domain`, from which canonical URLs, the
+sitemap, OG image URLs, and the JSON-LD all derive. To move to a registered
+domain, change those two fields and the `SITE` constant in
+`scripts/generate-og.mjs`, then redeploy.
 Analytics reports once deployed; the `/_vercel/insights/script.js` request 404s
 locally, which is expected.

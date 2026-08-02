@@ -2,8 +2,14 @@ export const profile = {
   name: "Zain Asher",
   role: "Software Engineer",
   company: "Ember AI",
-  domain: "zainasher.dev",
-  siteUrl: "https://zainasher.dev",
+  // The live address. Canonical URLs, the sitemap, OG image URLs, and the
+  // JSON-LD all derive from siteUrl, so pointing this at a domain that does
+  // not resolve would tell search engines the real page lives nowhere.
+  // Switching to a registered domain later is a one-line change here.
+  domain: "zainasher-dev.vercel.app",
+  siteUrl: "https://zainasher-dev.vercel.app",
+  /** Short form for the nav wordmark — the full host overflows at 320px. */
+  wordmark: "zainasher",
   copyrightYear: 2026,
 
   // Not a region list: naming specific markets reads as a limit rather than an
