@@ -30,17 +30,17 @@ export const projects: Project[] = [
     slug: "multi-agent-litigation-platform",
     title: "Multi-agent litigation platform",
     tagline:
-      "~40 specialized LLM agents composed into staged synthesis pipelines.",
+      "76 specialized LLM agents compiled into a seven-wave DAG with hard barriers between waves.",
     status: "IN PRODUCTION · NDA",
     period: "2026",
     problem:
       "Litigation teams spend enormous associate hours on work product that's high-volume but structurally repetitive. The bottleneck isn't legal judgment — it's the mechanical work between judgments.",
     substance:
-      "~40 specialized LLM agents composed into seven staged synthesis pipelines via LangGraph — foundation, discovery, motion practice, hearing prep, deposition, experts, final strategy. Multi-provider abstraction across Claude, Gemini, and OpenAI with automatic failover. Every handoff between stages is a Pydantic-validated schema with explicit status enums and mandatory evidence citations, which is what makes ~40 agents agree with each other.",
+      "76 specialized LLM agents compiled to LangGraph state graphs over typed state, composed into a seven-wave DAG in which waves act as hard barriers. Multi-provider abstraction across Claude, Gemini, and OpenAI with automatic failover. Retrieval ran on Pinecone before migrating to pgvector co-located in the primary Postgres, preserving the service interface so 32+ call sites were untouched.",
     metrics: [
+      { value: "76", label: "specialized agents" },
+      { value: "25", label: "concurrent steps at the widest wave" },
       { value: "~60%", label: "reduction in token spend" },
-      { value: "~40", label: "specialized agents" },
-      { value: "Live", label: "in production with paying users" },
     ],
     stack: [
       "FastAPI",
@@ -48,31 +48,37 @@ export const projects: Project[] = [
       "Claude",
       "Gemini",
       "OpenAI",
-      "Pinecone",
-      "PostgreSQL",
+      "Pinecone \u2192 PostgreSQL + pgvector",
+      "Bedrock Titan Embed V2",
       "SQLAlchemy 2.0 async",
       "Celery",
       "Redis",
+      "ECS Fargate",
+      "Terraform",
       "Next.js",
     ],
     noLinkNote: "Architecture walkthrough available on request",
     featured: true,
     detail: [
       {
-        heading: "The contract is the architecture",
-        body: "Every handoff between stages is a Pydantic-validated schema with explicit status enums and mandatory evidence citations. Agents cannot pass prose to each other — only typed payloads that fail loudly when a field is missing or a citation is absent. This is what makes ~40 agents agree with each other: the validation boundary catches disagreement at the seam rather than letting it compound downstream.",
+        heading: "Waves as hard barriers",
+        body: "The pipeline runs as a seven-wave DAG rather than freely-communicating agents. Steps inside a wave execute concurrently; wave N starts only once every step in N\u22121 has finished, by success, skip, or failure. That barrier is what keeps 76 agents consistent \u2014 no agent ever reads half-built upstream state, and a failure is attributable to a step rather than to an emergent interaction.",
       },
       {
-        heading: "Staged synthesis, not a swarm",
-        body: "The pipeline runs as seven ordered stages via LangGraph rather than as freely-communicating agents. Each stage consumes the previous stage's typed output and emits its own. Ordering is explicit, so a failure is attributable to a stage rather than to an emergent interaction, and any stage can be re-run in isolation against a stored payload.",
+        heading: "The shape is an hourglass",
+        body: "Single-step waves at the start gate a 25-step fan-out in the middle. Those bottlenecks are the highest-leverage failures in the system: everything downstream inherits their output. It also means the widest wave\u2019s concurrency is in-process \u2014 asyncio.gather inside one container \u2014 so throughput scales with provider concurrency limits rather than with infrastructure.",
       },
       {
-        heading: "Provider abstraction and failover",
-        body: "Each stage routes across Claude, Gemini, and OpenAI behind a single interface, with automatic failover when a provider errors or times out. Model choice is a per-stage configuration concern rather than something baked into agent code, which makes it cheap to move a stage to a different model when its evaluation numbers justify it.",
+        heading: "What makes it agentic, not just RAG",
+        body: "46 of the 76 agents run a bounded loop. A plan node has the model author its own queries and decide whether to search at all; a validate node then judges whether coverage is sufficient and can re-enter retrieval with new queries, capped so it terminates. The other 30 never touch the vector store \u2014 their evidence is upstream analysis output, which is correct for them.",
+      },
+      {
+        heading: "Pinecone, then pgvector",
+        body: "Retrieval shipped first on Pinecone \u2014 managed index, semaphore-bounded async calls, and a per-vector metadata ceiling to work around. It now runs on pgvector co-located in the primary Postgres, with Bedrock Titan Embed V2 pinned to 1024 dimensions so the index never has to migrate. Co-location is the payoff: an agent joins semantic hits against relational facts without crossing a service boundary or reconciling two consistency models. The migration preserved the service interface so 32+ call sites were untouched \u2014 at the cost of a class still named after the thing it no longer is.",
       },
       {
         heading: "Cost engineering",
-        body: "Shared case context is cached with a stable prefix and memoized per session rather than re-read per agent. With ~40 agents touching overlapping context, naive re-reading dominated spend; prefix caching and session memoization cut roughly 60% of token cost without changing any output.",
+        body: "Prompt assembly sorts cache-stable sections first and attaches cache-control markers; variable sections follow uncached. Shared case context is prefetched and memoized per session rather than re-read per agent, and cooperative cancellation checks between retries and streaming events give sub-second abort. With dozens of agents in a chain sharing one case dossier, that ordering is what makes a full run affordable: roughly 60% less token spend than the first working version.",
       },
     ],
   },

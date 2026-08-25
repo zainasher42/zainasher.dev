@@ -38,7 +38,7 @@ export const workflow: WorkflowSection[] = [
     body: [
       "What changed isn't my typing speed. It's that the expensive mistakes moved upstream. When implementation is cheap, a bad data model is no longer partly hidden behind the effort of building it — you get to the consequences faster, at scale, and the wrong abstraction propagates through more code before anyone notices.",
       "So architecture and data modeling matter more now, not less. The schema you choose, the boundaries between services, the shape of the contract between two components — those are the decisions AI cannot make for you, and they are the ones that determine whether the system survives its second year.",
-      "This is the same argument as the pipeline diagram on this site. Typed contracts between agents are what keep ~40 of them consistent. Typed thinking between spec and implementation is what keeps the codebase consistent. The pattern is the same at both scales.",
+      "This is the same argument as the pipeline diagram on this site. Typed state and hard barriers between waves are what keep 76 agents consistent \u2014 not better instructions to each one. Typed thinking between spec and implementation is what keeps a codebase consistent. The pattern is the same at both scales.",
     ],
   },
   {

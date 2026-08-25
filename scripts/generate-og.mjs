@@ -57,9 +57,9 @@ function wrap(text, size, maxWidth) {
 
 /** The pipeline strip along the bottom — the site's visual signature. */
 function stageStrip(y) {
-  const names = ["FOUNDATION", "DISCOVERY", "MOTION", "HEARING", "DEPOSITION", "EXPERTS", "STRATEGY"];
-  const w = 132;
-  const gap = 20;
+  const names = ["SPINE", "RECORD", "PROOF", "THEORY", "THEMES", "ANALYSIS", "BRIEFS", "BLUEPRINT"];
+  const w = 112;
+  const gap = 13;
   const x0 = 80;
   return names
     .map((n, i) => {
@@ -69,7 +69,7 @@ function stageStrip(y) {
     <rect x="${x}" y="${y}" width="${w}" height="52" fill="${E2}" stroke="${first ? PRIMARY : LINE}" stroke-width="1" rx="2"/>
     <rect x="${x}" y="${y + 1}" width="2" height="50" fill="${first ? PRIMARY : ACCENT}"/>
     <text x="${x + w / 2}" y="${y + 31}" text-anchor="middle" fill="${DIM}"
-          font-family="${MONO}" font-size="12" letter-spacing="1">${n}</text>
+          font-family="${MONO}" font-size="10.5" letter-spacing="0.6">${n}</text>
     ${i < names.length - 1 ? `<rect x="${x + w + gap / 2 - 2}" y="${y + 24}" width="4" height="4" fill="${PRIMARY}"/>` : ""}`;
     })
     .join("");
@@ -140,8 +140,8 @@ const cards = [
   {
     file: "architecture.png",
     eyebrow: "Multi-agent litigation pipeline",
-    title: "The contracts are the architecture.",
-    chip: "~40 AGENTS · 7 STAGES",
+    title: "The barriers are the architecture.",
+    chip: "76 AGENTS · 7 WAVES",
   },
   {
     file: "how-i-work.png",

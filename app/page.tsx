@@ -79,8 +79,8 @@ export default function Home() {
                   System architecture
                 </h2>
                 <p className="mt-4 max-w-[54ch] font-display text-[1.375rem] leading-snug font-semibold tracking-[-0.02em] text-ink md:text-[1.75rem]">
-                  Seven stages, ~40 agents, and a typed contract at every
-                  handoff.
+                  Seventy-six agents, seven waves, and a hard barrier at every
+                  seam.
                 </p>
               </div>
               <Link

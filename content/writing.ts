@@ -27,7 +27,7 @@ export const writing: WritingEntry[] = [
   {
     title: "Architecting multi-agent systems in production",
     summary:
-      "~40 specialized LLM agents at Ember AI, orchestrated through LangGraph, with cost engineering that cut token spend by ~60%.",
+      "Orchestrating dozens of specialized LLM agents at Ember AI through LangGraph, with cost engineering that cut token spend by ~60%.",
     date: "May 2026",
     isoDate: "2026-05-31",
     href: "https://www.linkedin.com/posts/zain-asher-3960321b2_aiengineering-llm-productionai-activity-7466992259436015616-ghUe",
